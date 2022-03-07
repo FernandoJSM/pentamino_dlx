@@ -20,7 +20,7 @@ def polymino_cover_problem(board_size, vacant_squares=[], shapes=[]):
                     # Piece doesn't fit the board
                     continue
 
-                piece_in_board = board
+                piece_in_board = board.copy()
                 piece_in_board[position[0]:position[0]+piece.shape[0], position[1]:position[1]+piece.shape[1]] = piece
 
                 if np.where(piece_in_board > 1)[0].size == 0:

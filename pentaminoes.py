@@ -3,6 +3,10 @@ import numpy as np
 
 class Pentaminoes:
     pieces = {
+        "I": [
+            np.array([[1, 1, 1, 1, 1]]),
+            np.array([[1], [1], [1], [1], [1]])
+        ],
         "L": [
             np.array([[1, 1, 1, 1], [1, 0, 0, 0]]),
             np.array([[1, 0], [1, 0], [1, 0], [1, 1]]),
