@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List, AnyStr
 
 import numpy as np
 import string
@@ -22,19 +21,27 @@ class Element:
 
 
 class DLX:
-
-    def __init__(self, input_matrix: np.ndarray, column_names: List[AnyStr] = None):
+    def __init__(self, input_matrix: np.ndarray):
         self.input_matrix = input_matrix
-        self.matrix = List[List]
+        self.matrix = list()
         self.shape = input_matrix.shape
-        self.column_names = column_names if column_names is not None else list(string.ascii_uppercase)[0:self.shape[1]]
+        self.column_names = list()
         self.solution = list()
+        self.generate_column_names()
         self.build()
+
+    def generate_column_names(self):
+        alphabet_iteration = -1
+        alphabet = string.ascii_uppercase
+        for i in range(self.shape[1]):
+            if i % 26 == 0:
+                alphabet_iteration += 1
+            self.column_names.append(alphabet[i % 26] + str(alphabet_iteration))
 
     @staticmethod
     def find_ones(array, start_index, right):
         """
-            Return the index of the first one in left or right from the start index
+        Return the index of the first one in left or right from the start index
         """
         j = start_index
         for c in range(len(array)):
@@ -67,59 +74,81 @@ class DLX:
             print(s)
 
     def build(self):
-        self.matrix = [[]]
+        self.matrix.append(list())
         for j in range(self.shape[1]):
             self.matrix[0].append(
                 Element(
                     pos=(0, j),
-                    L=(0, j-1) if j-1>0 else (0, self.shape[1] - 1),
-                    R=(0, j+1) if j+1 < self.shape[1] else (0, 0),
+                    L=(0, j - 1) if j - 1 > 0 else (0, self.shape[1] - 1),
+                    R=(0, j + 1) if j + 1 < self.shape[1] else (0, 0),
                     C=(0, j),
                     is_header=True,
                     S=np.sum(self.input_matrix, axis=0)[j],
-                    N=self.column_names[j]
+                    N=self.column_names[j],
                 )
             )
         for i in range(self.shape[0]):
             self.matrix.append(list())
             for j in range(self.shape[1]):
-                self.matrix[i+1].append(Element(pos=(i+1, j), C=(0, j), N=self.column_names[j]))
+                self.matrix[i + 1].append(
+                    Element(pos=(i + 1, j), C=(0, j), N=self.column_names[j])
+                )
                 if self.input_matrix[i, j] == 0:
                     continue
 
-                find_left = self.find_ones(array=self.input_matrix[i, :], start_index=j, right=False)
+                find_left = self.find_ones(
+                    array=self.input_matrix[i, :], start_index=j, right=False
+                )
                 if find_left > -1:
-                    self.matrix[i+1][j].L = (i+1, find_left)
+                    self.matrix[i + 1][j].L = (i + 1, find_left)
 
-                find_right = self.find_ones(array=self.input_matrix[i, :], start_index=j, right=True)
+                find_right = self.find_ones(
+                    array=self.input_matrix[i, :], start_index=j, right=True
+                )
                 if find_right > -1:
-                    self.matrix[i+1][j].R = (i+1, find_right)
+                    self.matrix[i + 1][j].R = (i + 1, find_right)
 
-                find_up = self.find_ones(array=np.insert(self.input_matrix[:, j], 0, 1), start_index=i+1, right=False)
+                find_up = self.find_ones(
+                    array=np.insert(self.input_matrix[:, j], 0, 1),
+                    start_index=i + 1,
+                    right=False,
+                )
                 if find_up > -1:
-                    self.matrix[i+1][j].U = (find_up, j)
+                    self.matrix[i + 1][j].U = (find_up, j)
 
-                find_down = self.find_ones(array=np.insert(self.input_matrix[:, j], 0, 1), start_index=i+1, right=True)
+                find_down = self.find_ones(
+                    array=np.insert(self.input_matrix[:, j], 0, 1),
+                    start_index=i + 1,
+                    right=True,
+                )
                 if find_down > -1:
-                    self.matrix[i+1][j].D = (find_down, j)
+                    self.matrix[i + 1][j].D = (find_down, j)
 
         for j in range(self.shape[1]):
-            find_up = self.find_ones(array=np.insert(self.input_matrix[:, j], 0, 1), start_index=0, right=False)
+            find_up = self.find_ones(
+                array=np.insert(self.input_matrix[:, j], 0, 1),
+                start_index=0,
+                right=False,
+            )
             if find_up > -1:
                 self.matrix[0][j].U = (find_up, j)
 
-            find_down = self.find_ones(array=np.insert(self.input_matrix[:, j], 0, 1), start_index=0, right=True)
+            find_down = self.find_ones(
+                array=np.insert(self.input_matrix[:, j], 0, 1),
+                start_index=0,
+                right=True,
+            )
             if find_down > -1:
                 self.matrix[0][j].D = (find_down, j)
 
     def retrieve_elems(self, pos: tuple, attribute: str):
         """
-            Retrieve a list of elements from the current position and attribute, excluding the current position element
+        Retrieve a list of elements from the current position and attribute, excluding the current position element
         """
         elem_list = list()
         next_pos = eval("self.matrix[pos[0]][pos[1]]." + attribute)
         visited_pos = [next_pos]
-        while (next_pos != pos):
+        while next_pos != pos:
             elem_list.extend([self.matrix[next_pos[0]][next_pos[1]]])
             next_pos = eval("self.matrix[next_pos[0]][next_pos[1]]." + attribute)
             if next_pos in visited_pos:
@@ -129,6 +158,7 @@ class DLX:
         return elem_list
 
     def cover_column(self, c):
+        print(f"Covering column {c.pos[1]}")
         c.covered = True
         # Set L[R[c]] ← L[c] and R[L[c]] ← R[c].
         if c.R != (-1, -1):
@@ -179,7 +209,7 @@ class DLX:
             self.matrix[c.L[0]][c.L[1]].R = c.pos
 
     def solve(self, k=0):
-
+        print(f"{k=}")
         if all([c.covered for c in self.matrix[0]]):
             return True, []
 
@@ -198,18 +228,18 @@ class DLX:
         self.cover_column(c=self.matrix[c.C[0]][c.C[1]])
         # For each r ← D[c], D[D[c]], ..., while r != c
         for r in self.retrieve_elems(pos=c.pos, attribute="D"):
-            self.solution.append(self.input_matrix[r.pos[0]-1])
+            self.solution.append(self.input_matrix[r.pos[0] - 1])
             # for each j ← R[r], R[R[r]], ..., while j != r
             for j in self.retrieve_elems(pos=r.pos, attribute="R"):
                 # Covering column j
                 self.cover_column(c=self.matrix[j.C[0]][j.C[1]])
 
-            if self.solve(k=k+1)[0]:
+            if self.solve(k=k + 1)[0]:
                 return True, np.array(self.solution)
 
             # set r ← Ok and c ← C[r]
             self.solution.pop(-1)
-            #self.uncover_column(c=self.matrix[c.C[0]][c.C[1]])
+            # self.uncover_column(c=self.matrix[c.C[0]][c.C[1]])
 
             # for each j ← L[r], L[L[r]], ..., while j != r,
             for j in self.retrieve_elems(pos=r.pos, attribute="L"):
@@ -220,14 +250,18 @@ class DLX:
 
 
 if __name__ == "__main__":
-    problem = DLX(input_matrix=np.array([
-        [0, 0, 1, 0, 1, 1, 0],
-        [1, 0, 0, 1, 0, 0, 1],
-        [0, 1, 1, 0, 0, 1, 0],
-        [1, 0, 0, 1, 0, 0, 0],
-        [0, 1, 0, 0, 0, 0, 1],
-        [0, 0, 0, 1, 1, 0, 1],
-    ]))
+    problem = DLX(
+        input_matrix=np.array(
+            [
+                [0, 0, 1, 0, 1, 1, 0],
+                [1, 0, 0, 1, 0, 0, 1],
+                [0, 1, 1, 0, 0, 1, 0],
+                [1, 0, 0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 1],
+                [0, 0, 0, 1, 1, 0, 1],
+            ]
+        )
+    )
 
     solution = problem.solve()
-    a = 1
+    print(solution[1])
