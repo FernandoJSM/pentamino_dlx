@@ -1,4 +1,4 @@
-# pentamino_dlx
+# Pentaminó DLX
 Implementação do algoritmo DLX para resolver quebra-cabeças com pentaminós
 
 - Imagem do jogo pentaminó
@@ -8,6 +8,7 @@ Implementação do algoritmo DLX para resolver quebra-cabeças com pentaminós
 
 ## A solução
 - Link do artigo
+- Comentar do python não ter ponteiros
 
 ## Resolvendo o calendário
 - Ibagens

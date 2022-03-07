@@ -52,6 +52,11 @@ class Pentaminoes:
             np.array([[0, 1, 0, 0], [1, 1, 1, 1]]),
             np.array([[0, 1], [0, 1], [1, 1], [0, 1]]),
             np.array([[1, 1, 1, 1], [0, 0, 1, 0]])
+        ],
+
+        # Um hexaminó para o problema do calendário!
+        "O": [
+            np.array([[1, 1, 1], [1, 1, 1]]),
+            np.array([[1, 1], [1, 1], [1, 1]])
         ]
-        # Adicionar o "O", mesmo sendo um hexamino
     }

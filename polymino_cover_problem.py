@@ -40,6 +40,7 @@ def polymino_cover_problem(board_size, vacant_squares=[], shapes=[]):
 
 if __name__ == "__main__":
     from dlx_algorithm import DLX
+    from plot_solution import plot_solution
 
     cover_matrix = polymino_cover_problem(
         board_size=(5, 5), vacant_squares=[], shapes=["L", "N", "P", "V", "Y"]
@@ -47,4 +48,4 @@ if __name__ == "__main__":
 
     problem = DLX(input_matrix=cover_matrix)
     solution = problem.solve()
-    print(solution[1])
+    plot_solution(board_size=(5, 5), shapes=["L", "N", "P", "V", "Y"], problem_solution=solution[1])
