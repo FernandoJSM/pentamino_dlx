@@ -158,7 +158,7 @@ class DLX:
         return elem_list
 
     def cover_column(self, c):
-        print(f"Covering column {c.pos[1]}")
+        # print(f"Covering column {c.pos[1]}")
         c.covered = True
         # Set L[R[c]] ← L[c] and R[L[c]] ← R[c].
         if c.R != (-1, -1):
@@ -209,7 +209,7 @@ class DLX:
             self.matrix[c.L[0]][c.L[1]].R = c.pos
 
     def solve(self, k=0):
-        print(f"{k=}")
+        # print(f"{k=}")
         if all([c.covered for c in self.matrix[0]]):
             return True, []
 
@@ -245,6 +245,8 @@ class DLX:
             for j in self.retrieve_elems(pos=r.pos, attribute="L"):
                 # Uncovering column j
                 self.uncover_column(c=self.matrix[j.C[0]][j.C[1]])
+
+        self.uncover_column(c=self.matrix[c.C[0]][c.C[1]])
 
         return False, []
 
