@@ -33,15 +33,21 @@ Para mais detalhes sobre o Algoritmo X e o DLX, veja o [artigo original](https:/
 
 ### Explicação com pentaminós
 
-[Pentaminó](https://en.wikipedia.org/wiki/Pentomino)
+[Pentaminós](https://en.wikipedia.org/wiki/Pentomino) são peças compostas de cinco quadrados congruentes conectados
+ortogonalmente. Existem 12 pentaminós, identificados por letras conforme a figura a seguir:
 
 <p align="center">
 <img src="./readme/pentamino_pieces.png" class="img-responsive" alt="Peças de pentaminó">
 </p>
 
+Os quebra-cabeças com pentaminós geralmente consistem em cobrir um tabuleiro com as peças deixando ou não alguns espaços
+vagos:
+
 <p align="center">
 <img src="./readme/pentamino_example.png" class="img-responsive" alt="Jogo pentaminó">
 </p>
+
+A representação matricial deste problema 
 
 ### Resolvendo o quebra-cabeças do calendário
 - Ibagens
