@@ -5,13 +5,16 @@ from pentaminoes import Pentaminoes
 
 def polymino_cover_problem(board_size, vacant_squares=[], shapes=[]):
     board = np.zeros(board_size)
+
+    for square in vacant_squares:
+        board[square[0], square[1]] = 1
+
     board_shape = np.array(board.shape)
     positions = list(itertools.product(range(board.shape[0]), range(board.shape[1])))
 
     placed_pieces = list()
 
     for s, shape_name in enumerate(shapes):
-
         for piece in Pentaminoes.pieces[shape_name]:
             piece_shape = np.array(piece.shape)
 
@@ -21,12 +24,16 @@ def polymino_cover_problem(board_size, vacant_squares=[], shapes=[]):
                     continue
 
                 piece_in_board = board.copy()
-                piece_in_board[position[0]:position[0]+piece.shape[0], position[1]:position[1]+piece.shape[1]] = piece
+                piece_in_board[position[0]:position[0]+piece.shape[0], position[1]:position[1]+piece.shape[1]] += piece
 
                 if np.where(piece_in_board > 1)[0].size == 0:
-                    placed_pieces.append((s, piece_in_board.flatten()))
+                    placed_pieces.append((s, piece_in_board.flatten() - board.flatten()))
+
+    if vacant_squares:
+        placed_pieces.append((len(shapes), board.flatten()))
 
     pieces_matrix = np.zeros((len(placed_pieces), len(set(pp[0] for pp in placed_pieces))))
+
     positions_matrix = np.zeros((len(placed_pieces), len(placed_pieces[0][1])))
 
     for i, pp in enumerate(placed_pieces):
