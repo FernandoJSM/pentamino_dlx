@@ -47,14 +47,57 @@ vagos:
 <img src="./readme/pentamino_example.png" class="img-responsive" alt="Jogo pentaminó">
 </p>
 
-A representação matricial deste problema 
+A representação matricial de um quebra-cabeças de pentaminós como um problema de cobertura exata é feita da seguinte
+forma:
 
-### Resolvendo o quebra-cabeças do calendário
-- Ibagens
+Cada possível local de uma peça de pentaminó no tabuleiro é representada por uma linha da matriz, composta por colunas
+que identificam a peça e por colunas que identificam onde a peça foi colocada no tabuleiro, conforme a imagem:
+
+<p align="center">
+<img src="./readme/pentamino_matrix.png" class="img-responsive" alt="Matriz do problema do pentaminó">
+</p>
+
+Dessa forma, a matriz terá várias linhas contendo todas as posições e variações possíveis de como uma peça pode ser
+colocada no tabuleiro, assim o algoritmo terá de encontrar as linhas que correspondem a um tabuleiro completamente
+preenchido.
 
 ## Algoritmos implementados
-- Comentar do python não ter ponteiros
-asd
+Os algoritmos foram implementados em Python, o DLX em especial optei por usar uma dataclass contendo ponteiros para a
+implementação do "Dancing Links".
+
+* ```dlx_algorithm.py```: Implementação do algoritmo DLX, ao longo do algoritmo existem alguns comentários referenciando
+o pseudo-código do artigo do Knuth. Apenas a primeira solução encontrada é retornada;
+* ```polymino_cover_problem.py```: Implementação de um gerador de matriz do problema de cobertura de quebra-cabeças com
+poliminós. Inclui uma opção para deixar lacunas vazias;
+* ```pentaminoes.py```: Representação das peças de pentaminó no formato de matriz do Numpy;
+* ```plot_solution.py```: Plota a solução obtida pelo algoritmo DLX;
+* ```classic_pentomino.py```: Exemplo da solução de problemas clássicos de pentaminós;
+* ```scott_problem.py```: Exemplo da solução do problema de Dana Scott, citado no artigo do Donald Kuth;
+* ```calendar_puzzle.py```: Exemplo da solução do quebra-cabeças de calendário, que utiliza peças de pentaminós e uma
+peça de hexaminó.
+
+### Resolvendo o quebra-cabeças do calendário
+
+Aqui está uma das aplicações desse algoritmo, um quebra-cabeças de calendário. A ideia é que você coloque todas as peças
+no tabuleiro, deixando aparente apenas um mês e um dia. 
+
+<p align="center">
+<img src="./readme/calendar_puzzle.jpg" width="300" class="img-responsive" alt="Quebra-cabeças de calendário">
+</p>
+
+Para a solução o tabuleiro é considerado de forma retangular, então os quadrados abaixo dos dias [25, 26, 27, 28] e dos
+meses de junho e dezembro serão considerados como preenchidos, além do dia e mês escolhidos. Estes quadrados já
+preenchidos serão considerados como uma "peça extra" para entrar na matriz de solução.
+
+Pela figura, observe que uma das peças é um hexaminó.
+
+O restante do programa é executado normalmente e o resultado é plotado no final (Os quadrados com # correspondem às
+lacunas deixadas no tabuleiro):
+
+<p align="center">
+<img src="./readme/calendar_solution.png" width="300" class="img-responsive" alt="Quebra-cabeças de calendário
+resolvido para o dia 1o de março">
+</p>
 
 ## Referências
 

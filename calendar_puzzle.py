@@ -6,7 +6,7 @@ from polymino_cover_problem import polymino_cover_problem
 
 if __name__ == "__main__":
     month = 3
-    day = 8
+    day = 1
 
     m_i, m_j = np.where(np.reshape(np.array(range(1, 13)), (2, 6)) == month)
     month_pos = (m_i[0], m_j[0])
